@@ -17,7 +17,52 @@
             type="image/x-icon"
         />
 
-        <link rel="stylesheet" href="./style.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: "Poppins", sans-serif;
+                background-color: #0d0d0d;
+                margin: 20%;
+            }
+            body::-webkit-scrollbar {
+                display: none;
+            }
+            .container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+
+            .text {
+                font-size: 10vw;
+                letter-spacing: -0.01em;
+                line-height: 100%;
+                margin: 0;
+
+                width: 100%;
+                color: rgb(182, 182, 182, 0.2);
+                background: linear-gradient(to right, #b6b6b6, #b6b6b6)
+                    no-repeat;
+                -webkit-background-clip: text;
+                background-clip: text;
+                background-size: 0%;
+                transition: background-size cubic-bezier(0.1, 0.5, 0.5, 1) 0.5s;
+
+                border-bottom: 1px solid #2f2b28;
+
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                position: relative;
+            }
+            .sm {
+                font-size: 8vh !important;
+            }
+        </style>
     </head>
     <body>
         <!-- partial:index.partial.html -->
@@ -34,6 +79,66 @@
             src="https://buttons.github.io/buttons.js"
         ></script>
         <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.11.0/tsparticles.confetti.bundle.min.js"></script>
-        <script src="./script.js"></script>
+        <script>
+            const duration = 60 * 60 * 1000,
+                animationEnd = Date.now() + duration,
+                defaults = {
+                    startVelocity: 30,
+                    spread: 360,
+                    ticks: 20,
+                    zIndex: 0,
+                };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 20 * (timeLeft / duration);
+
+                // since particles fall down, start a bit higher than random
+                confetti(
+                    Object.assign({}, defaults, {
+                        particleCount,
+                        origin: {
+                            x: randomInRange(0.1, 0.3),
+                            y: Math.random() - 0.2,
+                        },
+                    })
+                );
+                confetti(
+                    Object.assign({}, defaults, {
+                        particleCount,
+                        origin: {
+                            x: randomInRange(0.7, 0.9),
+                            y: Math.random() - 0.2,
+                        },
+                    })
+                );
+            }, 250);
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const textElements = gsap.utils.toArray(".text");
+
+            textElements.forEach((text) => {
+                gsap.to(text, {
+                    backgroundSize: "100%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: text,
+                        start: "center 80%",
+                        end: "center 20%",
+                        scrub: true,
+                    },
+                });
+            });
+        </script>
     </body>
 </html>
